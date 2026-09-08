@@ -113,21 +113,21 @@ The following screenshots show the seeded demo payment after reconciliation.
 
 The bill for 1850.00 is marked PAID after successful reconciliation.
 
-![Demo bill marked PAID](docs/screenshots/01-paid-bill.png)
+![Demo bill marked PAID](docs/Screenshots/01-paid-bill.png)
 
 ### Reconciled payment
 
 The provider reports SUCCESS, and the application records the payment
 as RECONCILED after checking the amount.
 
-![Demo payment marked RECONCILED](docs/screenshots/02-reconciled-payment.png)
+![Demo payment marked RECONCILED](docs/Screenshots/02-reconciled-payment.png)
 
 ### Reconciliation history
 
 The audit event records the payment's status change and the reason
 for the decision.
 
-![Reconciliation audit event](docs/screenshots/03-reconciliation-history.png)
+![Reconciliation audit event](docs/Screenshots/03-reconciliation-history.png)
 
 ## Architecture and data
 
