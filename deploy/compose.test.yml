@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: utilitypay_test
+      POSTGRES_USER: utilitypay
+      POSTGRES_PASSWORD: utilitypay_test_only
+    ports:
+      - '127.0.0.1:55432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U utilitypay -d utilitypay_test']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '127.0.0.1:56379:6379'
+  web:
+    build: ..
+    environment: &test-env
+      POSTGRES_DB: utilitypay_test
+      POSTGRES_USER: utilitypay
+      POSTGRES_PASSWORD: utilitypay_test_only
+      POSTGRES_HOST: db
+      REDIS_URL: redis://redis:6379/0
+      DJANGO_SECRET_KEY: isolated-test-secret-key-at-least-32-characters
+    ports:
+      - '127.0.0.1:58000:8000'
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+  worker:
+    build: ..
+    environment: *test-env
+    command: celery -A utilitypay worker -l info --concurrency=2
+    depends_on:
+      web:
+        condition: service_started
+  beat:
+    build: ..
+    environment: *test-env
+    command: celery -A utilitypay beat -l info
+    depends_on:
+      web:
+        condition: service_started
